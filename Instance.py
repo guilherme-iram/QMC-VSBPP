@@ -1,20 +1,20 @@
 class Instance:
+    id = -1
+    n = -1
+    m = -1
+    d = -1
+    type = -1
 
-    def __init__(self, id, n, m, d, _type):
-        self.id = id
-        self.n = n
-        self.m = m
-        self.d = d
-        self._type = _type
-
-        self.items = []
-        self.bins = []
-        self.linked_items = []
-
+    items = []
+    bins = []
+    linked_items = []
+    def __init__(self):
+        pass
+        
     def __str__(self):
-        return f"instance={self.id}_n={self.n}_m={self.m}_d={self.d}_type={self._type}"
+        return f"instance={Instance.id}_n={Instance.n}_m={Instance.m}_d={Instance.d}_type={Instance._type}"
 
-class Bin:
+class BinTypeData:
 
     def __init__(self, id, cost, values):
             self.id = id
@@ -24,13 +24,19 @@ class Bin:
     def __str__(self):
         return f"Bin {self.id} with cost {self.cost} and capacity {self.capacity}"
 
-class Item:
+class ItemData:
 
     def __init__(self, id, values):
         self.id = id
         self.weight = [value for value in values if value > 0] 
+        self.linked_items = []
 
     def __str__(self):
-        return f"Item {self.id} with weight {self.weight}"
+        a_str =  f"Item {self.id} with weight {self.weight}\n"
+
+        for item in self.linked_items:
+            a_str += f" joinCost to item {item.id} is {item.cost}\n"
+        
+        return a_str
 
 

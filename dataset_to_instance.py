@@ -62,7 +62,7 @@ for name_dataset in all_datasets:
                 if "value" in line:
                     values.append(int(line.split('=')[-1]))
 
-            bin_type = Bin(type_bin, cost_bin, values)
+            bin_type = BinTypeData(type_bin, cost_bin, values)
             bins_type_list.append(bin_type)
 
         # Ultimo bin
@@ -78,7 +78,7 @@ for name_dataset in all_datasets:
             else:
                 values.append(int(line.split('=')[-1]))
         
-        bin_type = Bin(type_bin, cost_bin, values)
+        bin_type = BinTypeData(type_bin, cost_bin, values)
         bins_type_list.append(bin_type)
 
 
@@ -107,7 +107,7 @@ for name_dataset in all_datasets:
                 if "=" in line:
                     values.append(int(line.split('=')[-1]))
             
-            item_type = Item(id_item, values)
+            item_type = ItemData(id_item, values)
             items_type_list.append(item_type)
             # print(item_type)
                 

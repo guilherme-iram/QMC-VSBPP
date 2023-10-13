@@ -1,6 +1,9 @@
 from Instance import *
+from collections import namedtuple
 
-def instance_reader(path):
+jointCost = namedtuple('jointCost', ['id', 'cost'])
+
+def instance_reader(path, verbose=False):
 
     with open(path, 'r') as f:
         inst = f.read()
@@ -26,8 +29,13 @@ def instance_reader(path):
             _type = element.split('=')[1]
 
     # print(InstanceN, n, m, d, _type)
-    my_instance = Instance(InstanceN, n, m, d, _type)
-    print(my_instance, '\n')
+    Instance.id = InstanceN
+    Instance.n = n
+    Instance.m = m
+    Instance.d = d
+    Instance._type = _type
+    if verbose:
+        print(Instance, '\n')
 
     # ------------------- BINS -------------------
 
@@ -50,7 +58,7 @@ def instance_reader(path):
             if "value" in line:
                 values.append(int(line.split('=')[-1]))
 
-        bin_type = Bin(type_bin, cost_bin, values)
+        bin_type = BinTypeData(type_bin, cost_bin, values)
         bins_type_list.append(bin_type)
 
     # OBS: O último bin não tem o 'Item:' no final
@@ -66,15 +74,15 @@ def instance_reader(path):
         else:
             values.append(int(line.split('=')[-1]))
     
-    bin_type = Bin(type_bin, cost_bin, values)
+    bin_type = BinTypeData(type_bin, cost_bin, values)
     bins_type_list.append(bin_type)
 
 
-    my_instance.bins = bins_type_list
-
-    for bin_ in my_instance.bins:
-        print(bin_)
-    print()
+    Instance.bins = bins_type_list
+    if verbose:
+        for bin_ in Instance.bins:
+            print(bin_)
+        print()
 
     # ------------------- ITEMS ------------------- 
 
@@ -99,15 +107,17 @@ def instance_reader(path):
             if "=" in line:
                 values.append(int(line.split('=')[-1]))
         
-        item_type = Item(id_item, values)
+        item_type = ItemData(id_item, values)
         items_type_list.append(item_type)
-        # print(item_type)
+        if verbose:
+            print(item_type)
                 
-    my_instance.items = items_type_list
+    Instance.items = items_type_list
 
-    for item in my_instance.items:
-        print(item)
-    print()
+    if verbose:
+        for item in Instance.items:
+            print(item)
+        print()
 
     # ------------------- LINKS -------------------
 
@@ -129,12 +139,13 @@ def instance_reader(path):
                 cost = int(element.split('=')[1])
         
         links.append((itemNo1, itemNo2, cost))
+
+        Instance.items[itemNo1-1].linked_items.append(jointCost(itemNo2, cost))
     
-    my_instance.linked_items = links
+    Instance.linked_items = links
 
-    for i, link in enumerate(my_instance.linked_items):
-        print(f"Link {i+1}: {link}")
-
-    return my_instance
+    if verbose:
+        for i, link in enumerate(Instance.linked_items):
+            print(f"Link {i+1}: {link}")
 
 
