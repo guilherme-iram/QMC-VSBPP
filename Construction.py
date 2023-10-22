@@ -31,6 +31,7 @@ def trivial_solution():
     return sol
         
 def calculate_distance(sol:Solution, j1:int, j2:int):
+
     best_k = -1
     best_cost = float('inf')
 
@@ -73,9 +74,11 @@ def calculate_distance(sol:Solution, j1:int, j2:int):
 
         
 
-def construction():
-    sol = trivial_solution()
-    sol.calculateInfo()
+def construction(sol = None):
+    if sol is None:
+        sol = trivial_solution()
+    else:
+        sol.calculateInfo()
     
     while True:
         best_k = -1

@@ -6,11 +6,11 @@ def main():
     path = 'instances/' + instance_name + '.txt'
     instance_reader(path)
 
-    for item in Instance.items_Data:
-        print(item)
+    # for item in Instance.items_Data:
+        # print(item)
     
     sol = VNS()
+    # print(sol)
 
-    print(sol)
 if __name__ == "__main__":
     main()
