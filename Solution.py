@@ -2,22 +2,33 @@ from Instance import *
 from copy import deepcopy
 
 class Item:
-    def __init__(self, id = -1, weight = None, nOfDependentItems = 0, jointCost = 0) -> None:
+    def __init__(self, id = -1, nOfDependentItems = 0, jointCost = 0) -> None:
         self.id = id
-        self.weight = weight # dimensões do item
         self.nOfDependentItems = nOfDependentItems
         self.binId = -1 # id do bin que o item está
-        self.dependentItems = [-1 for _ in range(nOfDependentItems)] # lista de itens dependetes. O valor é 1 se o item dependente 
+        self.dependentItems = [-1 for _ in range(nOfDependentItems)] # lista de itens dependentes. O valor é 1 se o item dependente 
                                                                     # está em um bin diferente do item principal, e 0 caso contrário
         self.jointCost = 0 # soma do custo conjunto de todos os itens dependentes
 
     def __str__(self) -> str:
-        a_str =  f"Item {self.id}: weight {self.weight}, in bin {self.binId}, jointCost {self.jointCost}\n"
+        a_str =  f"Item {self.id}: weight {self.getWeight()}, in bin {self.binId}, jointCost {self.jointCost}\n"
         a_str += f"Dependent items: {self.dependentItems}\n"
         return a_str
 
     def __repr__(self) -> str:
         return self.__str__()
+    
+    
+
+    def getData(self): # retorna o objeto ItemData correspondente ao item
+        return Instance.items_Data[self.id]
+    
+    def getWeight(self):
+        return Instance.items_Data[self.id].weight
+    
+    def linkedIds(self): # retorna a lista de itens dependentes
+        return Instance.items_Data[self.id].linked_Ids
+
     
     def setBinBeforeCalc(self, binId):
         self.binId = binId                  # a razão desta função existir é que, ao criar uma primeira solução, é necessário definir o bin de cada item
@@ -28,117 +39,135 @@ class Item:
     def updateJointCost(self):
         self.jointCost = 0
         for i in range(self.nOfDependentItems):
-            self.jointCost += self.dependentItems[i] * Instance.items[self.id - 1].linked_items[i].cost
+            dependentId = Instance.items_Data[self.id].linked_Ids[i]
+            self.jointCost += self.dependentItems[i] * Instance.linked_items_Matrix[self.id][dependentId]
 
-class B1:
-    # Uma lista implementada como vetor.
-    def __init__(self, nOfItems = 0) -> None:
-        self.used = [-1 for _ in range(nOfItems)]
-        self.nextIndex = 0
-        self.cost = 0
-    
-    def add(self, type):
-        self.used[self.nextIndex] = type
-        self.cost += Instance.bins[type - 1].cost
-        self.nextIndex += 1
-    
-    def remove(self):
-        self.nextIndex -= 1
-        self.cost -= Instance.bins[self.used[self.nextIndex] - 1].cost
-        self.used[self.nextIndex] = -1
-    
-    def updateCost(self):
-        self.cost = 0
-        index = 0
 
-        while self.used[index] != -1:
-            self.cost += Instance.bins[self.used[index] - 1].cost
-            index += 1
-            if index >= len(self) :
-                break
-        
+class Bin:
+
+    def __init__(self, type:int = -1) -> None:
+        self.type = type
+        if type == -1:
+            self.cost = 0
+        else:
+            self.cost = Instance.bins_Data[type].cost
+        self.jointCost = 0
+        self.items = []
+        self.weight = [0 for _ in range(Instance.d)]
+    
     def __str__(self) -> str:
-        return str(self.used)
+        a_str =  f"Bin Type {self.type}, cost {self.cost}, jointCost {self.jointCost}\n"
+        a_str += f"Items: {self.items}\n"
+        return a_str
     
     def __repr__(self) -> str:
         return self.__str__()
     
+    def __getitem__(self, key):     # retorna o id do item na posição na posição key do bin
+        return self.items[key]
+    
+    def __len__(self):          # retorna o número de itens no bin len(bin)
+        return len(self.items)
+    
+    def __iter__(self):
+        return iter(self.items) # para fazer for item in bin:
+    
+    def copy(self):
+        return deepcopy(self)
+    
+    def resetCost(self):
+        self.cost = Instance.bins_Data[self.type].cost
+        self.jointCost = 0
 
-
-    def __len__(self):
-        return self.nextIndex
+    def changeType(self, newType):
+        self.type = newType
+        self.cost = Instance.bins_Data[self.type].cost
     
 
+    def addItem(self, item):
+        self.items.append(item.id)
+        
+        for d in range(Instance.d):
+            self.weight[d] += Instance.items_Data[item.id].weight[d]
+
+    def removeItem(self, item):
+        self.items.remove(item.id)
+        
+        for d in range(Instance.d):
+            self.weight[d] -= Instance.items_Data[item.id].weight[d]
+
+# Sempre se altera o jointCost a partir da classe solution e vai atribuindo para as classes menores
 class Solution:
     def __init__(self) -> None:
-        self.bins = B1(0) # define a lista de bins. Caso o bin esteja vazio, o valor é -1. Do contrário, o valor é o tipo do bin
-        self.items = None # define a lista de items. 
-        #self.jointCostSum = 0 # soma do custo conjunto de todos os itens
+        self.bins = [Bin() for _ in range(Instance.n)]
+        self.bins = InstanceList(self.bins)
+        self.items = [Item(itemData.id, len(itemData.linked_Ids)) for itemData in Instance.items_Data]
+        self.items = InstanceList(self.items)
         self.cost = 0
+
+    
+    def __str__(self) -> str:
+        a_str =  f"Solution: cost {self.cost}\n"
+        a_str += f"Bins: {self.bins}\n"
+        return a_str
     
     def __repr__(self) -> str:
-        a_str = f"Solution with cost {self.cost}\n"
-        a_str += f"Bins: {self.bins}\n"
-        a_str += f"Items: \n{self.items}\n"
-        return a_str
-
-    def __str__(self) -> str:
-        return self.__repr__()
-
-    def copy(self, other):
-        self = deepcopy(other)
-
+        return self.__str__()
     
-    def calculateInfo(self):        # função estável
+    def __getitem__(self, key):     # retorna o bin na posição key da solução
+        return self.bins[key]
+    
+    def calculateInfo(self):
         self.cost = 0
-        jointCostSum = 0
+        for bin in self.bins:
+            bin.resetCost()
         for item in self.items:
             if item.binId == -1:
                 raise Exception("Item not in bin")
             
             item.jointCost = 0
             for dependentIndex in range(item.nOfDependentItems):
-                item.dependentItems[dependentIndex] = 1 if self.items[Instance.items[item.id - 1].linked_items[dependentIndex].id - 1].binId != item.binId else 0
+                dependentId = Instance.items_Data[item.id].linked_Ids[dependentIndex]
+                item.dependentItems[dependentIndex] = 1 if self.items[dependentId].binId != item.binId else 0
+
+                item.jointCost += item.dependentItems[dependentIndex] * Instance.linked_items_Matrix[item.id][dependentId]
             
-            for dependentIndex in range(item.nOfDependentItems):
-                item.jointCost += item.dependentItems[dependentIndex] * Instance.items[item.id - 1].linked_items[dependentIndex].cost
+            
+            self.bins[item.binId].jointCost += item.jointCost
         
-            jointCostSum += item.jointCost
+        self.cost = sum([bin.cost for bin in self.bins]) + sum([bin.jointCost for bin in self.bins])
 
-        self.bins.updateCost()
+    def copy(self, other):
+        self = deepcopy(other)
 
-        self.cost = self.bins.cost + jointCostSum       
+    def merge(self, j1:int, j2:int, best_k:int):
+        for item in self.bins[j2]:
+            self.items[item].binId = j1
+            self.bins[j1].addItem(self.items[item])
+        self.bins[j1].type = best_k
+        self.bins.remove(self.bins[j2])
+        for i in (range(j2, len(self.bins) + 1)):
+            for iter in range(len(self.bins[i])):
+                self.items[self.bins[i][iter]].binId -= 1
 
-
-    def updateCost(self):
-        self.cost = 0
-
-        for item in self.items:
-            self.cost += item.jointCost
         
-        self.cost += self.bins.cost
-
-    def setBin(self, itemId, binId): # cabe revisão mantive aqui apenas para ficar a "ideia" mas precisa alterar também quem tinha itemId nos seus itens dependentes
-        self.items[itemId - 1].binId = binId
-        self.cost -= self.items[itemId - 1].jointCost
-
-        self.items[itemId -1 ].jointCost = 0
-
-        item = self.items[itemId - 1]
-        for dependentIndex in range(self.items[itemId - 1].nOfDependentItems):
-            self.items[itemId - 1 ].dependentItems[dependentIndex] = 1 if self.items[Instance.items[itemId - 1].linked_items[dependentIndex].id - 1].binId != item.binId else 0
-            self.items[itemId - 1].jointCost += self.items[itemId - 1 ].dependentItems[dependentIndex] * Instance.items[itemId - 1].linked_items[dependentIndex].cost
+        self.calculateInfo()
+        
 
 
-    def __len__(self):
-        return len(self.items)
+    
+
+        
+            
+
+    
 
 
-    @classmethod
-    def from_Instance(cls):
-        cls = Solution()
-        cls.bins = B1(len(Instance.items))
-        cls.items = [Item(itemData.id, itemData.weight, len(itemData.linked_items)) for itemData in Instance.items]
-        cls.cost = 0
-        return cls
+        
+
+
+
+    
+
+
 

@@ -6,7 +6,7 @@ def main():
     path = 'instances/' + instance_name + '.txt'
     instance_reader(path)
 
-    for item in Instance.items:
+    for item in Instance.items_Data:
         print(item)
     
     sol = VNS()

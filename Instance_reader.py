@@ -1,7 +1,10 @@
 from Instance import *
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 
 jointCost = namedtuple('jointCost', ['id', 'cost'])
+
+def default_factory():
+    return 0
 
 def instance_reader(path, verbose=False):
 
@@ -78,9 +81,9 @@ def instance_reader(path, verbose=False):
     bins_type_list.append(bin_type)
 
 
-    Instance.bins = bins_type_list
+    Instance._bins = bins_type_list
     if verbose:
-        for bin_ in Instance.bins:
+        for bin_ in Instance._bins:
             print(bin_)
         print()
 
@@ -112,10 +115,10 @@ def instance_reader(path, verbose=False):
         if verbose:
             print(item_type)
                 
-    Instance.items = items_type_list
+    Instance._items = items_type_list
 
     if verbose:
-        for item in Instance.items:
+        for item in Instance._items:
             print(item)
         print()
 
@@ -140,12 +143,32 @@ def instance_reader(path, verbose=False):
         
         links.append((itemNo1, itemNo2, cost))
 
-        Instance.items[itemNo1-1].linked_items.append(jointCost(itemNo2, cost))
+        Instance._items[itemNo1-1].linked_Ids.append(itemNo2)
+
+        Instance._items[itemNo1-1].linked_items.append(jointCost(itemNo2, cost))
+
     
-    Instance.linked_items = links
+    Instance._linked_items = links
 
     if verbose:
-        for i, link in enumerate(Instance.linked_items):
+        for i, link in enumerate(Instance._linked_items):
             print(f"Link {i+1}: {link}")
+    
+    
+    Instance.items_Data = InstanceList(Instance._items)
+    Instance.bins_Data = InstanceList(Instance._bins)
+
+    Instance.linked_items_Matrix = InstanceList()
+    
+
+    for i in range(1, Instance.n + 1):
+        j_costs = defaultdict(default_factory)
+        for link in Instance._linked_items:
+            if link[0] == i:
+                j_costs[link[1]] = link[2]
+        
+        Instance.linked_items_Matrix.append(j_costs)
+                
+
 
 
