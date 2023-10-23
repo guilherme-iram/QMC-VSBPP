@@ -103,8 +103,8 @@ def construction(sol = None):
 
 
         sol.merge(best_j1, best_j2, best_k)
-
-                    
+        
+        
                         
 
     

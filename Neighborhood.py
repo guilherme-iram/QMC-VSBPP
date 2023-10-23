@@ -4,7 +4,7 @@ import random
 from Construction import * 
 
 
-random.seed(42)
+# random.seed(42)
 
 def swap_all_itens(bin_1, bin_2):
     
@@ -68,7 +68,8 @@ def swap_bins(solution, alhpa=0.6):
                 itens_removed_from_bins.append(item)
             else:
                 break
-
+    
+    print("Totla de itens removidos: ", len(itens_removed_from_bins))
     for item in itens_removed_from_bins:
 
         lowest_cost = float('inf')
@@ -79,7 +80,7 @@ def swap_bins(solution, alhpa=0.6):
             if type.cost < lowest_cost:
                 available_capacity = True
                 for dim in range(Instance.d):
-                        if item.weight[dim] > type.capacity[dim]:
+                        if Instance.items_Data[item].weight[dim] > type.capacity[dim]:
                              available_capacity = False
                              break
                 
@@ -89,18 +90,12 @@ def swap_bins(solution, alhpa=0.6):
         
 
         new_bin = Bin(best_type)
-        new_bin.addItem(item)
-        j_to_set = -1
+        new_bin.addItem(Instance.items_Data[item])
+        solution.bins.append(new_bin)
 
-        for j in range(len(solution.bins)):
-            if solution.bins[j].id == -1:
-                solution.bins[j] = new_bin
-                j_to_set = j
-                break
-        
-        solution.items[item.id].setBinBeforeCalc(j_to_set)
+        solution.items[Instance.items_Data[item].id].setBinBeforeCalc(len(solution.bins))
 
-    solution = construction(solution)
+    construction(solution)
     solution.calculateInfo()
 
     return solution
