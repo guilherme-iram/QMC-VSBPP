@@ -69,7 +69,7 @@ def swap_bins(solution, alhpa=0.6):
             else:
                 break
     
-    print("Totla de itens removidos: ", len(itens_removed_from_bins))
+    # print("Totla de itens removidos: ", len(itens_removed_from_bins))
     for item in itens_removed_from_bins:
 
         lowest_cost = float('inf')
@@ -100,3 +100,51 @@ def swap_bins(solution, alhpa=0.6):
 
     return solution
 
+
+def delete_bins(solution, betha=0.5):
+
+    random_bins = random.sample(solution.bins, int(len(solution.bins) * betha))
+
+    if len(random_bins) == 1:
+        return solution
+    
+    itens_removed_from_bins = []
+
+    for i in range(len(random_bins)):
+
+        for item in random_bins[i].items:
+            itens_removed_from_bins.append(item)
+        
+        solution.bins.remove(random_bins[i])
+
+    # rint("Totla de itens removidos: ", len(itens_removed_from_bins))
+    
+    for item in itens_removed_from_bins:
+
+        lowest_cost = float('inf')
+        best_type = -1
+        
+        for type in Instance.bins_Data:
+
+            if type.cost < lowest_cost:
+                available_capacity = True
+                for dim in range(Instance.d):
+                        if Instance.items_Data[item].weight[dim] > type.capacity[dim]:
+                             available_capacity = False
+                             break
+                
+                if available_capacity:
+                    lowest_cost = type.cost
+                    best_type = type.id
+        
+
+        new_bin = Bin(best_type)
+        new_bin.addItem(Instance.items_Data[item])
+        solution.bins.append(new_bin)
+
+        solution.items[Instance.items_Data[item].id].setBinBeforeCalc(len(solution.bins))
+
+    construction(solution)
+    solution.calculateInfo()
+
+    return solution
