@@ -256,9 +256,26 @@ def buildAcyclicGraph(solution:Solution):
             else:
                 line.append(Node(items=[-1])) # transforma o itens atrás do item i em um nó inválido de custo infinito
         
+        
+        node = Node(items=[0])
+
+        node.cost = 0.0
+
+        node.bin_type = 0
+
+
+
+        line.append(node)                   # linha completa (lista de nós)
+
+        acyclic_digraph.append(line)        # grafo acíclico completo (lista de linhas)
+
+
+        '''
+        Caso dummy node seja uma cópia do nó anterior:
+
         set_of_items.append(0)                              # faz uma cópia do nó anterior e adiciona o nó 0 (nó final)
 
-        node = Node(items=deepcopy(set_of_items))
+        node = Node(items=[deepcopy(set_of_items)])
 
         node.cost = line[len(sequenced_items) - 1].cost  
 
@@ -269,6 +286,8 @@ def buildAcyclicGraph(solution:Solution):
         line.append(node)                   # linha completa (lista de nós)
 
         acyclic_digraph.append(line)        # grafo acíclico completo (lista de linhas)
+
+        '''
     
 
     return acyclic_digraph
