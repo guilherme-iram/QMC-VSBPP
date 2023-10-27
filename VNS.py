@@ -22,7 +22,7 @@ def VND_test(best_solution):
 def VND():
     pass
 
-def VNS(maxIter = 1000):
+def VNS(maxIter = 5):
     
     best = construction()
     best.calculateInfo()

@@ -69,12 +69,15 @@ class ItemData:
         self.weight = [value for value in values if value > 0] 
         self.linked_Ids = []
         self.linked_items = []
+        self.totalJointCost = 0
 
     def __str__(self):
         a_str =  f"Item {self.id} with weight {self.weight}\n"
+        a_str += f"Total joint Cost: {self.totalJointCost}\n"
 
         for item in self.linked_items:
             a_str += f" joinCost to item {item.id} is {item.cost}\n"
+        
         
         return a_str
 

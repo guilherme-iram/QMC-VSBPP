@@ -168,6 +168,9 @@ def instance_reader(path, verbose=False):
                 j_costs[link[1]] = link[2]
         
         Instance.linked_items_Matrix.append(j_costs)
+
+    for i in range(1, Instance.n + 1):
+        Instance.items_Data[i].totalJointCost = sum(Instance.linked_items_Matrix[i].values())
                 
 
 
