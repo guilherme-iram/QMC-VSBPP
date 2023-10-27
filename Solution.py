@@ -126,8 +126,12 @@ class Solution:
 
         self.cost = 0
 
-        for bin in self.bins:
-            bin.resetCost()
+        for index in range(1, len(self.bins) + 1):
+            self.bins[index].resetCost()
+
+            for it in range(len(self.bins[index])):
+                self.items[self.bins[index][it]].binId = index
+            
 
         for item in self.items:
             if item.binId == -1:

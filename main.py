@@ -2,7 +2,7 @@ from Instance_reader import *
 from VNS import *
 
 def main():
-    instance_name = "instance=1_n=25_m=10_d=3_type=B1"
+    instance_name = "instance=2_n=25_m=20_d=3_type=B1"
     print("Instance: ", instance_name)
     path = 'instances/' + instance_name + '.txt'
     instance_reader(path)
