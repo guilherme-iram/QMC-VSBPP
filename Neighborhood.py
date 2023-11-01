@@ -38,7 +38,6 @@ def swap_all_itens(bin_1, bin_2):
         bin_1.addItem(Instance.items_Data[item])
 
 
-
 def swap_bins(solution, alhpa=0.6):
 
     random_bins = random.sample(solution.bins, int(len(solution.bins) * alhpa))
@@ -208,8 +207,6 @@ def buildAcyclicGraph(solution:Solution):
                 line.append(node)
 
 
-
-
             elif j > i:
                 jointCost += Instance.items_Data[sequenced_items[j]].totalJointCost # soma o jointCost total do item j ao jointCost
 
@@ -257,13 +254,6 @@ def buildAcyclicGraph(solution:Solution):
                 line.append(Node(items=[-1])) # transforma o itens atrás do item i em um nó inválido de custo infinito
         
         
-        node = Node(items=[0])
-
-        node.cost = 0.0
-
-        node.bin_type = 0
-
-
 
         line.append(node)                   # linha completa (lista de nós)
 
@@ -292,3 +282,44 @@ def buildAcyclicGraph(solution:Solution):
 
     return acyclic_digraph
 
+
+def dijkstra(graph):
+    
+    nodes = [[np.inf, None, i] for i in range(len(graph))]
+    nodes[0][0] = 0 # custo
+    nodes[0][1] = 0 # pai
+
+    solution_nodes = []
+
+    while len(nodes) > 0:
+
+        nodes = sorted(nodes)
+        current_node = nodes.pop(0)
+        solution_nodes.append(current_node)
+
+        for i in range(len(nodes)):
+            if graph[current_node[2]][nodes[i][2]].cost + current_node[0] < nodes[i][0]:
+                nodes[i][0] = graph[current_node[2]][nodes[i][2]].cost + current_node[0]
+                nodes[i][1] = current_node[2]
+
+    final_node = solution_nodes[-1]
+    arcs = []
+
+    while True:
+        arcos.append((final_node[1], final_node[2]))
+        if final_node[1] == 0:
+            break
+        final_node = solution_nodes[final_node[1]]
+
+    arcs = sorted(arcs)
+
+    return arcs
+
+
+def permutation_shortest_path(solution: Solution):
+
+    graph = buildAcyclicGraph(solution)
+    arcs = dijkstra(graph)
+
+    for arc in arcs:
+        pass
