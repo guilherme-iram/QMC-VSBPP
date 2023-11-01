@@ -3,7 +3,7 @@ from Neighborhood import *
 
 neighborhood = [swap_bins, delete_bins]
 
-def VND_test(best_solution):
+def VND(best_solution):
 
     solution = Solution()
     solution = deepcopy(best_solution)
@@ -19,33 +19,34 @@ def VND_test(best_solution):
     return best_solution        
 
 
-def VND():
-    pass
-
-def VNS(maxIter = 5):
+def VNS():
     
     best = construction()
     best.calculateInfo()
-    aux_solution = deepcopy(best)
-    print(best)
 
-    for i in range(maxIter):
-        aux_solution = neighborhood[i % 2](aux_solution)
+    print("Custo inicial: ", best.cost)
+
+    aux_solution = deepcopy(best)
+    
+    iter = 0
+    
+    for k in range(len(neighborhood)):
+        
+        aux_solution = neighborhood[k](aux_solution)
         aux_solution.calculateInfo()
-        aux_solution = VND_test(aux_solution)
+        aux_solution = VND(aux_solution)
         aux_solution.calculateInfo()
 
         if aux_solution.cost < best.cost:
-            
             print("Melhorou: ", aux_solution.cost, best.cost)
             best = deepcopy(aux_solution)
-            i = 0
-        if i % 10 == 0:
+            k = 0
+
+        if iter % 10 == 0:
             print("-" * 15)
-            print("Iteracao: ", i)
+            print("Iteracao: ", iter)
             print("-" * 15)
 
-    print(best)
+        iter += 1 
 
     return best
-
