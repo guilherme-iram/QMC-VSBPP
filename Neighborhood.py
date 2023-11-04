@@ -2,6 +2,7 @@ from Solution import *
 from Instance import *
 import random
 from Construction import * 
+import numpy as np
 
 from collections import namedtuple
 
@@ -279,7 +280,10 @@ def buildAcyclicGraph(solution:Solution):
 
         '''
     
-
+    for i in range(len(acyclic_digraph)):
+        for j in range(len(acyclic_digraph[i])):
+            print(f"{acyclic_digraph[i][j].cost:5}", end=" ")
+        print()
     return acyclic_digraph
 
 
@@ -305,14 +309,16 @@ def dijkstra(graph):
     final_node = solution_nodes[-1]
     arcs = []
 
+    print(final_node)
     while True:
-        arcos.append((final_node[1], final_node[2]))
+        arcs.append((final_node[1], final_node[2]))
         if final_node[1] == 0:
             break
         final_node = solution_nodes[final_node[1]]
+        print(final_node)
 
     arcs = sorted(arcs)
-
+    print("\n", arcs)
     return arcs
 
 
