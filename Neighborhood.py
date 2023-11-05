@@ -282,10 +282,7 @@ def buildAcyclicGraph(solution:Solution):
 
         '''
     
-    for i in range(len(acyclic_digraph)):
-        for j in range(len(acyclic_digraph[i])):
-            print(f"{acyclic_digraph[i][j].cost:5}", end=" ")
-        print()
+    
     return acyclic_digraph
 
 
@@ -311,16 +308,16 @@ def dijkstra(graph):
     final_node = solution_nodes[-1]
     arcs = []
 
-    print(final_node)
+    #print(final_node)
     while True:
         arcs.append((final_node[1], final_node[2]))
         if final_node[1] == 0:
             break
         final_node = solution_nodes[final_node[1]]
-        print(final_node)
+        #print(final_node)
 
     arcs = sorted(arcs)
-    print("\n", arcs)
+    #print("\n", arcs)
     return arcs
 
 
@@ -329,5 +326,27 @@ def permutation_shortest_path(solution: Solution):
     graph = buildAcyclicGraph(solution)
     arcs = dijkstra(graph)
 
-    for arc in arcs:
-        print(arc)
+    new_solution = Solution()
+    
+    new_solution.bins = InstanceList()
+
+    
+    for i in range(len(arcs)):
+
+        if i == len(arcs) -1:
+            node = graph[arcs[i][0]][arcs[i][1]]
+        
+        else:
+            node = graph[arcs[i][0]][arcs[i][1]-1]
+        
+        bin = Bin(node.bin_type)
+        for item in node.items:
+            new_solution.items[item].binId = i + 1
+            bin.addItem(Instance.items_Data[item])
+        
+        new_solution.bins.append(bin)
+    
+    new_solution.calculateInfo()
+    
+    return new_solution
+

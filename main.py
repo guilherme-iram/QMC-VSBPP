@@ -11,7 +11,7 @@ def main():
     
     sol = VNS()
 
-    print(permutation_shortest_path(sol))
+    print(sol)
 
 if __name__ == "__main__":
     main()

@@ -1,5 +1,6 @@
 from Construction import *
 from Neighborhood import *
+import time
 
 neighborhood = [swap_bins, delete_bins]
 
@@ -95,14 +96,33 @@ def bestImprovementSwapItems(solution:Solution):
 
 
 
-def VNS():
+def VNS(max_iter = 200000, time_limit = 10):
     
     best = construction()
     best.calculateInfo()
-    #return best
 
-    print("Custo inicial: ", best.cost)
+    k = 1
+    start = time.time()
+    for i in range(max_iter):
+        while(k <=3):
+            if k == 1:
+                current = swap_bins(best)
+            elif k == 2:
+                current = delete_bins(best)
+            
+            elif k == 3:
+                current = permutation_shortest_path(best)
+            
+            current = VND(current)
 
-    #best = VND(best)
-
+            if best.cost - current.cost > epsilon:
+                best = deepcopy(current)
+                k = 1
+            else:
+                k += 1
+        
+        if time.time() - start > time_limit:
+            return best
+     
+    print('Retorno por maxIter')
     return best
