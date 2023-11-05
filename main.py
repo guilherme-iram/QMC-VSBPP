@@ -1,5 +1,6 @@
 from Instance_reader import *
 from VNS import *
+
 import numpy as np
 
 def main():
@@ -9,7 +10,7 @@ def main():
     instance_reader(path)
     
     sol = VNS()
-    print(sol)
+    print(permutation_shortest_path(sol))
 
 
 if __name__ == "__main__":

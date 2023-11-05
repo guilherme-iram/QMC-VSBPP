@@ -38,7 +38,8 @@ def swap_all_itens(bin_1, bin_2):
         bin_1.addItem(Instance.items_Data[item])
 
 
-def swap_bins(solution, alhpa=0.6):
+def swap_bins(solution_, alhpa=0.6):
+    solution = deepcopy(solution_)
 
     random_bins = random.sample(solution.bins, int(len(solution.bins) * alhpa))
 
@@ -114,8 +115,9 @@ def swap_bins(solution, alhpa=0.6):
     return solution
 
 
-def delete_bins(solution, betha=0.5):
+def delete_bins(solution_, betha=0.5):
 
+    solution = deepcopy(solution_)
     random_bins = random.sample(solution.bins, int(len(solution.bins) * betha))
 
     if len(random_bins) == 1:
@@ -285,7 +287,7 @@ def buildAcyclicGraph(solution:Solution):
 
 def dijkstra(graph):
     
-    nodes = [[np.inf, None, i] for i in range(len(graph))]
+    nodes = [[float('inf'), None, i] for i in range(len(graph))]
     nodes[0][0] = 0 # custo
     nodes[0][1] = 0 # pai
 
@@ -306,7 +308,7 @@ def dijkstra(graph):
     arcs = []
 
     while True:
-        arcos.append((final_node[1], final_node[2]))
+        arcs.append((final_node[1], final_node[2]))
         if final_node[1] == 0:
             break
         final_node = solution_nodes[final_node[1]]
@@ -322,4 +324,4 @@ def permutation_shortest_path(solution: Solution):
     arcs = dijkstra(graph)
 
     for arc in arcs:
-        pass
+        print(arc)

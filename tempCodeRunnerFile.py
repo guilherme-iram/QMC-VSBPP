@@ -1,2 +1,1 @@
-
-    # print(sol)
+    instance_reader(path)

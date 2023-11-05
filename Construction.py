@@ -106,5 +106,3 @@ def construction(sol = None):
         
         
                         
-
-    

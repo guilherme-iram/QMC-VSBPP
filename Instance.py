@@ -55,7 +55,7 @@ class BinTypeData:
     def __init__(self, id, cost, values):
             self.id = id
             self.cost = cost
-            self.capacity = [value for value in values if value > 0]
+            self.capacity = [value for value in values]
 
     def __str__(self):
         return f"Bin {self.id} with cost {self.cost} and capacity {self.capacity}"
@@ -66,7 +66,7 @@ class ItemData:
 
     def __init__(self, id, values):
         self.id = id
-        self.weight = [value for value in values if value > 0] 
+        self.weight = [value for value in values] 
         self.linked_Ids = []
         self.linked_items = []
         self.totalJointCost = 0

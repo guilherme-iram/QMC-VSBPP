@@ -57,10 +57,12 @@ class Bin:
         self.jointCost = 0
         self.items = []
         self.weight = [0 for _ in range(Instance.d)]
-    
+
+        
     def __str__(self) -> str:
         a_str =  f"Bin Type {self.type}, cost {self.cost}, jointCost {self.jointCost} "
         a_str += f"Items: {self.items}\n"
+        a_str += f"Weight: {self.weight}\n"
         return a_str
     
     def __repr__(self) -> str:
@@ -80,20 +82,38 @@ class Bin:
     
     def resetCost(self):
         self.cost = Instance.bins_Data[self.type].cost
+        
         self.jointCost = 0
 
     def changeType(self, newType):
         self.type = newType
         self.cost = Instance.bins_Data[self.type].cost
     
-    def addItem(self, item):
+    def canAddItem(self, item_id:int):
+        
+        for d in range(Instance.d):
+            if self.weight[d] + Instance.items_Data[item_id].weight[d] > Instance.bins_Data[self.type].capacity[d]:
+                return False
+
+        return True
+
+    def canSwapItems(self, item_i:int, item_j:int) ->bool:
+        # verifica se pode remover o item i e adicionar o item j no lugar
+        for d in range(Instance.d):
+            if self.weight[d] - Instance.items_Data[item_i].weight[d] + Instance.items_Data[item_j].weight[d] > Instance.bins_Data[self.type].capacity[d]:
+                return False
+        
+
+        return True
+    
+    def addItem(self, item:Item):
 
         self.items.append(item.id)
         
         for d in range(Instance.d):
             self.weight[d] += Instance.items_Data[item.id].weight[d]
 
-    def removeItem(self, item):
+    def removeItem(self, item:Item):
         self.items.remove(item.id)
         
         for d in range(Instance.d):
@@ -150,8 +170,11 @@ class Solution:
         self.cost = sum([bin.cost for bin in self.bins]) + sum([bin.jointCost for bin in self.bins])
 
 
+
     def copy(self, other):
-        self = deepcopy(other)
+        self.bins= deepcopy(other.bins)
+        self.items = deepcopy(other.items)
+        self.cost = other.cost
 
 
     def merge(self, j1:int, j2:int, best_k:int):
@@ -168,6 +191,102 @@ class Solution:
                 self.items[self.bins[i][iter]].binId -= 1
         
         self.calculateInfo()
+    
+    def evaluateMigrateItem(self, i:int, j:int)->float: # i é o item que vai sair, j é o bin onde o item que vai entrar
+        new_cost = self.cost
+        if self.bins[j].canAddItem(i):
+            new_cost -= self.items[i].jointCost
+            new_cost += Instance.items_Data[i].totalJointCost # reseta o jointCost do item i
+
+            for dependentIndex in range(self.items[i].nOfDependentItems):
+                dependentId = Instance.items_Data[i].linked_Ids[dependentIndex]
+                if self.items[dependentId].binId == self.bins[j].id:
+                    new_cost -= Instance.linked_items_Matrix[i][dependentId]
+            
+            for item in self.bins[j]:
+                new_cost -= Instance.linked_items_Matrix[item][i]
+            
+            if (len(self.bins[j]) == 1):
+                new_cost -= self.bins[j].cost
+
+            
+            
+            return new_cost
+                
+        else:
+            return new_cost
+    
+    def migrateItem(self, i:int, j:int):
+        
+        if len(self.bins[self.items[i].binId]) != 1:
+
+            self.bins[self.items[i].binId].removeItem(self.items[i])
+
+        else:
+            self.bins.remove(self.bins[self.items[i].binId])
+
+        self.bins[j].addItem(self.items[i])
+        self.items[i].binId = j
+
+        self.calculateInfo()
+    
+    def evaluateSwapItems(self, i:int, j:int)->float:
+        new_cost = self.cost
+
+        can_i = self.bins[self.items[i].binId].canSwapItems(self.items[i].id, self.items[j].id)
+        can_j = self.bins[self.items[j].binId].canSwapItems(self.items[j].id, self.items[i].id)
+
+        if can_i and can_j:
+            
+            new_cost -= self.items[i].jointCost
+            new_cost -= self.items[j].jointCost
+
+            new_cost += Instance.items_Data[i].totalJointCost
+            new_cost += Instance.items_Data[j].totalJointCost
+
+            for dependentIndex in range(self.items[i].nOfDependentItems):
+                dependentId = Instance.items_Data[i].linked_Ids[dependentIndex]
+                if self.items[dependentId].binId == self.bins[self.items[j].binId].id:
+                    new_cost -= Instance.linked_items_Matrix[i][dependentId]
+            
+            for item in self.bins[self.items[j].binId]:
+                new_cost -= Instance.linked_items_Matrix[item][i]
+
+
+            for dependentIndex in range(self.items[j].nOfDependentItems):
+                dependentId = Instance.items_Data[j].linked_Ids[dependentIndex]
+                if self.items[dependentId].binId == self.bins[self.items[i].binId].id:
+                    new_cost -= Instance.linked_items_Matrix[j][dependentId]
+                
+            for item in self.bins[self.items[i].binId]:
+                new_cost -= Instance.linked_items_Matrix[item][j]
+            
+            return new_cost
+
+        else:
+            return new_cost
+    
+    def swapItems(self, i:int, j:int):
+
+       
+
+        self.bins[self.items[i].binId].removeItem(self.items[i])
+        self.bins[self.items[j].binId].removeItem(self.items[j])
+
+        self.bins[self.items[i].binId].addItem(self.items[j])
+        self.bins[self.items[j].binId].addItem(self.items[i])
+
+        bin_i = self.items[i].binId
+        bin_j = self.items[j].binId
+
+        self.items[i].binId = bin_j
+        self.items[j].binId = bin_i
+
+
+        self.calculateInfo()
+
+
+    
         
 
 

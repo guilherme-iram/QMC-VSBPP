@@ -5,48 +5,104 @@ neighborhood = [swap_bins, delete_bins]
 
 def VND(best_solution):
 
-    solution = Solution()
-    solution = deepcopy(best_solution)
+    current = deepcopy(best_solution)
 
-    for i in range(0, len(neighborhood)):
+    while True:
+        current = bestImprovementMigrateItems(current)
 
-        solution = neighborhood[i](solution)
+        if best_solution.cost - current.cost > epsilon:
+            best_solution = deepcopy(current)
+            continue
 
-        if solution.cost < best_solution.cost:
-            best_solution = deepcopy(solution)
-            i = 0
+        current = bestImprovementSwapItems(current)
 
-    return best_solution        
+        if best_solution.cost - current.cost > epsilon:
+            best_solution = deepcopy(current)
+            
+            continue
+
+        return current
+
+
+
+def bestImprovementMigrateItems(solution:Solution):
+    best_i = -1 # index do melhor item
+    best_j = -1 # index do melhor bin
+
+    improved = False
+
+    best_cost = solution.cost
+    new_cost = 0.0
+
+
+    for i in range(1, Instance.n+1):
+        for j in range(1, len(solution.bins)+1):
+
+            if solution.items[i].binId == j:
+                continue
+
+            new_cost = solution.evaluateMigrateItem(i, j)
+
+            if (best_cost - new_cost > epsilon): # se houver melhoria no custo
+                # checa se o item i cabe no bin j
+
+            
+                #print(f'best_cost: {best_cost} new_cost: {new_cost}')
+                improved = True
+                best_cost = new_cost
+                best_i = i
+                best_j = j
+    
+    if improved == True:
+        
+        #print(f'best_cost: {best_cost}, best_i: {best_i}, best_j: {best_j}')
+        solution.migrateItem(best_i, best_j)
+    
+    return solution
+    
+
+
+def bestImprovementSwapItems(solution:Solution):
+    best_i = -1 # index do melhor item i
+    best_j = -1 # index do melhor item j
+
+    improved = False
+
+    best_cost = solution.cost
+
+
+
+    for i in range(1, Instance.n):
+        for j in range(i+1, Instance.n + 1):
+            
+            if solution.items[i].binId == solution.items[j].binId:
+                continue
+            
+            new_cost = solution.evaluateSwapItems(i, j)
+            
+
+            if (best_cost - new_cost > epsilon):
+                improved = True
+                best_cost = new_cost
+                best_i = i
+                best_j = j
+    
+    if improved == True:
+        #print(f'best_cost: {best_cost}, best_i: {best_i}, best_j: {best_j}')
+        solution.swapItems(best_i, best_j)
+    
+    return solution
+
 
 
 def VNS():
     
     best = construction()
     best.calculateInfo()
+    #return best
 
     print("Custo inicial: ", best.cost)
 
-    aux_solution = deepcopy(best)
-    
-    iter = 0
-    
-    for k in range(len(neighborhood)):
-        
-        aux_solution = neighborhood[k](aux_solution)
-        aux_solution.calculateInfo()
-        aux_solution = VND(aux_solution)
-        aux_solution.calculateInfo()
-
-        if aux_solution.cost < best.cost:
-            print("Melhorou: ", aux_solution.cost, best.cost)
-            best = deepcopy(aux_solution)
-            k = 0
-
-        if iter % 10 == 0:
-            print("-" * 15)
-            print("Iteracao: ", iter)
-            print("-" * 15)
-
-        iter += 1 
+    #best = VND(best)
 
     return best
