@@ -1,0 +1,6 @@
+Instância: instance=11_n=25_m=20_d=5_type=B2.txt
+Melhor custo: 8413.0000
+Custo médio : 8458.2000
+Tempo médio : 0.2110
+Desvio padrão do custo: 33.0660
+Desvio padrão do tempo: 0.0129
