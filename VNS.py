@@ -121,8 +121,8 @@ def VNS(max_iter = 200000, time_limit = 10):
             else:
                 k += 1
         
-        if time.time() - start > time_limit:
-            return best
+            if time.time() - start > time_limit:
+                return best
      
     print('Retorno por maxIter')
     return best
