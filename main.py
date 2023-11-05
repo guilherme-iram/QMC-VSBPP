@@ -1,6 +1,6 @@
 from Instance_reader import *
 from VNS import *
-
+import numpy as np
 
 def main():
     instance_name = "instance=1_n=25_m=10_d=3_type=B1"
@@ -11,7 +11,7 @@ def main():
     sol = VNS()
 
     permutation_shortest_path(sol)
-
+    
     # print(sol)
 
 

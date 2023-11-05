@@ -1,0 +1,7 @@
+Solution: cost 8485
+Bin Type 9, cost 891, jointCost 421 Items: [20, 1, 6, 12, 5]
+Bin Type 10, cost 961, jointCost 1301 Items: [9, 7, 21, 22, 10, 11, 8]
+Bin Type 1, cost 723, jointCost 544 Items: [17, 24, 13]
+Bin Type 10, cost 961, jointCost 744 Items: [2, 23, 25, 18, 4]
+Bin Type 10, cost 961, jointCost 978 Items: [16, 19, 14, 15, 3]
+Tempo: 0.19129133224487305 (s).
