@@ -268,8 +268,6 @@ class Solution:
     
     def swapItems(self, i:int, j:int):
 
-       
-
         self.bins[self.items[i].binId].removeItem(self.items[i])
         self.bins[self.items[j].binId].removeItem(self.items[j])
 
@@ -281,7 +279,6 @@ class Solution:
 
         self.items[i].binId = bin_j
         self.items[j].binId = bin_i
-
 
         self.calculateInfo()
 

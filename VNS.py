@@ -10,19 +10,16 @@ def VND(best_solution):
 
     while True:
         current = bestImprovementMigrateItems(current)
-
-        if best_solution.cost - current.cost > epsilon:
-            best_solution = deepcopy(current)
-            continue
-
+        
         current = bestImprovementSwapItems(current)
 
         if best_solution.cost - current.cost > epsilon:
+            # print("Melhorei com SWAP ITEMS")
+            # print(f'best: {best_solution.cost} current: {current.cost}')
             best_solution = deepcopy(current)
-            
             continue
-
-        return current
+        
+        return best_solution
 
 
 
@@ -71,8 +68,6 @@ def bestImprovementSwapItems(solution:Solution):
 
     best_cost = solution.cost
 
-
-
     for i in range(1, Instance.n):
         for j in range(i+1, Instance.n + 1):
             
@@ -81,7 +76,6 @@ def bestImprovementSwapItems(solution:Solution):
             
             new_cost = solution.evaluateSwapItems(i, j)
             
-
             if (best_cost - new_cost > epsilon):
                 improved = True
                 best_cost = new_cost
@@ -96,33 +90,47 @@ def bestImprovementSwapItems(solution:Solution):
 
 
 
-def VNS(max_iter = 200000, time_limit = 10):
+def VNS(max_iter = 20000000, time_limit = 10.0):
     
     best = construction()
     best.calculateInfo()
 
+    print("-" * 30)
+    print(f'\nInitial Cost: {best.cost}\n')
+    print("-" * 30)
+
     k = 1
     start = time.time()
-    for i in range(max_iter):
-        while(k <=3):
+    # for i in range(max_iter):
+    while True:
+        k = 1
+
+        while(k <= 2):
             if k == 1:
                 current = swap_bins(best)
             elif k == 2:
                 current = delete_bins(best)
-            
             elif k == 3:
+                # Tá com erro ("Exception Item not in bin")
                 current = permutation_shortest_path(best)
             
             current = VND(current)
 
             if best.cost - current.cost > epsilon:
+                print(f'best: {best.cost} current: {current.cost}')
                 best = deepcopy(current)
                 k = 1
             else:
                 k += 1
         
             if time.time() - start > time_limit:
+                print('Retorno por tempo')
+                return best    
+
+
+        if time.time() - start > time_limit:
+                print('Retorno por tempo')
                 return best
-     
+
     print('Retorno por maxIter')
     return best

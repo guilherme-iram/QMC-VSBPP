@@ -4,7 +4,7 @@ from VNS import *
 import numpy as np
 
 def main():
-    instance_name = "instance=1_n=25_m=10_d=3_type=B1"
+    instance_name = "instance=10_n=25_m=10_d=5_type=B2"
     print("Instance: ", instance_name)
     path = 'instances/' + instance_name + '.txt'
     instance_reader(path)
