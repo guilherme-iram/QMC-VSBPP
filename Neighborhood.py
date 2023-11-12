@@ -175,7 +175,7 @@ def buildAcyclicGraph(solution:Solution):
             sequenced_items.append(item)
  
     random.shuffle(sequenced_items)
-    print(sequenced_items)
+    
 
 
     acyclic_digraph = []
@@ -338,7 +338,7 @@ def dijkstra(graph):
     arcs_aux = [len(graph) - 1]
 
     while True:
-        print(arcs_aux)
+     
         for node in solution_nodes:
             if node[2] == arcs_aux[0]:
                 final_node = node
@@ -364,7 +364,6 @@ def permutation_shortest_path(solution: Solution):
     new_solution.bins = InstanceList()
     # show_acyclic_graph(graph)
 
-    print(arcs)
 
     a_list = []
 
@@ -376,7 +375,7 @@ def permutation_shortest_path(solution: Solution):
         else:
             node = graph[arcs[i][0]][arcs[i][1]-1]
         
-        print(node)
+
         
         a_list = a_list + node.items
         
@@ -388,7 +387,6 @@ def permutation_shortest_path(solution: Solution):
         new_solution.bins.append(bin)
     
     a_list.sort()
-    print(a_list)
     
     new_solution.calculateInfo()
     

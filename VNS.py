@@ -2,7 +2,7 @@ from Construction import *
 from Neighborhood import *
 import time
 
-neighborhood = [swap_bins, delete_bins]
+#neighborhood = [swap_bins, delete_bins]
 
 def VND(best_solution):
 
@@ -10,6 +10,11 @@ def VND(best_solution):
 
     while True:
         current = bestImprovementMigrateItems(current)
+        if best_solution.cost - current.cost > epsilon:
+            # print("Melhorei com SWAP ITEMS")
+            # print(f'best: {best_solution.cost} current: {current.cost}')
+            best_solution = deepcopy(current)
+            continue
         
         current = bestImprovementSwapItems(current)
 
@@ -90,18 +95,15 @@ def bestImprovementSwapItems(solution:Solution):
 
 
 
-def VNS(max_iter = 20000000, time_limit = 60.0):
+def VNS(max_iter = 2000, time_limit = 600.0):
     
     best = construction()
     best.calculateInfo()
 
-    print("-" * 30)
-    print(f'\nInitial Cost: {best.cost}\n')
-    print("-" * 30)
-
     k = 1
     start = time.time()
     # for i in range(max_iter):
+    iter = 0
     while True:
         k = 1
 
@@ -122,21 +124,24 @@ def VNS(max_iter = 20000000, time_limit = 60.0):
             current = VND(current)
 
             if best.cost - current.cost > epsilon:
-                print(f'best: {best.cost} current: {current.cost}')
+               
                 best = deepcopy(current)
-                print(best)
+                
                 k = 1
+                iter = 0
             else:
-                k += 1
+                k += 0
+                iter += 1
         
             if time.time() - start > time_limit:
-                print('Retorno por tempo')
+                #print('Retorno por tempo')
                 return best    
+            
+            if iter > max_iter:
+                #print('Retorno por maxIter')
+                return best
 
 
         if time.time() - start > time_limit:
-                print('Retorno por tempo')
+                #print('Retorno por tempo')
                 return best
-
-    print('Retorno por maxIter')
-    return best
