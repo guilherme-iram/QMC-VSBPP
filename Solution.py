@@ -131,6 +131,8 @@ class Solution:
     
     def __str__(self) -> str:
         a_str =  f"Solution: cost {self.cost}\n"
+        #for item in self.items:
+        #    a_str += f"{item}"
         for bin in self.bins:
             a_str += f"{bin}"
 

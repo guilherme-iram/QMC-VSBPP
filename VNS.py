@@ -90,7 +90,7 @@ def bestImprovementSwapItems(solution:Solution):
 
 
 
-def VNS(max_iter = 20000000, time_limit = 10.0):
+def VNS(max_iter = 20000000, time_limit = 60.0):
     
     best = construction()
     best.calculateInfo()
@@ -105,20 +105,26 @@ def VNS(max_iter = 20000000, time_limit = 10.0):
     while True:
         k = 1
 
-        while(k <= 2):
+        while(k <= 3):
+           
             if k == 1:
                 current = swap_bins(best)
+                #print('Swap bins')
             elif k == 2:
+              
                 current = delete_bins(best)
+                #print('Delete bins')
             elif k == 3:
-                # Tá com erro ("Exception Item not in bin")
+                
                 current = permutation_shortest_path(best)
+                #print('Permutation shortest path')
             
             current = VND(current)
 
             if best.cost - current.cost > epsilon:
                 print(f'best: {best.cost} current: {current.cost}')
                 best = deepcopy(current)
+                print(best)
                 k = 1
             else:
                 k += 1

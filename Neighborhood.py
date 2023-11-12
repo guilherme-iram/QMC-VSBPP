@@ -173,6 +173,9 @@ def buildAcyclicGraph(solution:Solution):
     for bin in solution.bins:
         for item in bin:
             sequenced_items.append(item)
+ 
+    random.shuffle(sequenced_items)
+    print(sequenced_items)
 
 
     acyclic_digraph = []
@@ -258,7 +261,7 @@ def buildAcyclicGraph(solution:Solution):
         
         
 
-        line.append(node)                   # linha completa (lista de nós)
+        #line.append(node)                   # linha completa (lista de nós)
 
         acyclic_digraph.append(line)        # grafo acíclico completo (lista de linhas)
 
@@ -285,6 +288,15 @@ def buildAcyclicGraph(solution:Solution):
     
     return acyclic_digraph
 
+from time import sleep
+
+def show_acyclic_graph(graph):
+    for line in graph:
+        for node in line:
+            if node.items[0] != -1:
+                print(node.items, end=", ")
+        
+        print("\n")
 
 def dijkstra(graph):
     
@@ -319,6 +331,7 @@ def dijkstra(graph):
     arcs = sorted(arcs)
     #print("\n", arcs)
     return arcs
+    
 
 
 def permutation_shortest_path(solution: Solution):
@@ -329,15 +342,24 @@ def permutation_shortest_path(solution: Solution):
     new_solution = Solution()
     
     new_solution.bins = InstanceList()
+    show_acyclic_graph(graph)
 
+    print(arcs)
+
+    a_list = []
     
+  
     for i in range(len(arcs)):
 
-        if i == len(arcs) -1:
+        if i == len(arcs) - 1:
             node = graph[arcs[i][0]][arcs[i][1]]
         
         else:
             node = graph[arcs[i][0]][arcs[i][1]-1]
+        
+        print(node)
+        
+        a_list = a_list + node.items
         
         bin = Bin(node.bin_type)
         for item in node.items:
@@ -346,7 +368,11 @@ def permutation_shortest_path(solution: Solution):
         
         new_solution.bins.append(bin)
     
+    a_list.sort()
+    print(a_list)
+    
     new_solution.calculateInfo()
+    
     
     return new_solution
 

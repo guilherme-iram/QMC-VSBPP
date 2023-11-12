@@ -8,6 +8,7 @@ def main():
     print("Instance: ", instance_name)
     path = 'instances/' + instance_name + '.txt'
     instance_reader(path)
+    random.seed(42)
     
     sol = VNS()
 
