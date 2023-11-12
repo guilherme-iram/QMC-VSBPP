@@ -285,7 +285,10 @@ def buildAcyclicGraph(solution:Solution):
 
         '''
     
-    
+    # print (acyclic_digraph)
+
+
+
     return acyclic_digraph
 
 from time import sleep
@@ -298,40 +301,57 @@ def show_acyclic_graph(graph):
         
         print("\n")
 
+
 def dijkstra(graph):
-    
+
+    adj_list = []
+
+    for i in range(len(graph)):
+        adj_list.append([])
+        for j in range(len(graph[i])):
+            if graph[i][j].cost != float('inf'):
+                adj_list[i].append(j)
+
     nodes = [[float('inf'), None, i] for i in range(len(graph))]
-    nodes[0][0] = 0 # custo
-    nodes[0][1] = 0 # pai
+    nodes[0][0] = 0  # custo
+    nodes[0][1] = 0  # pai
 
     solution_nodes = []
+    visited_nodes = set()
 
-    while len(nodes) > 0:
+    while nodes:
 
-        nodes = sorted(nodes)
-        current_node = nodes.pop(0)
+        current_node = min(nodes, key=lambda x: x[0])
+        nodes.remove(current_node)
+        visited_nodes.add(current_node[2])
         solution_nodes.append(current_node)
 
-        for i in range(len(nodes)):
-            if graph[current_node[2]][nodes[i][2]].cost + current_node[0] < nodes[i][0]:
-                nodes[i][0] = graph[current_node[2]][nodes[i][2]].cost + current_node[0]
-                nodes[i][1] = current_node[2]
+        for adj in adj_list[current_node[2]]:
+            if adj not in visited_nodes:
+                for node in nodes:
+                    if node[2] == adj:
+                        if node[0] > current_node[0] + graph[current_node[2]][adj].cost:
+                            node[0] = current_node[0] + graph[current_node[2]][adj].cost
+                            node[1] = current_node[2]
 
     final_node = solution_nodes[-1]
-    arcs = []
+    arcs_aux = [len(graph) - 1]
 
-    #print(final_node)
     while True:
-        arcs.append((final_node[1], final_node[2]))
+        print(arcs_aux)
+        for node in solution_nodes:
+            if node[2] == arcs_aux[0]:
+                final_node = node
+                arcs_aux.insert(0, node[1])
+                break
+        
         if final_node[1] == 0:
             break
-        final_node = solution_nodes[final_node[1]]
-        #print(final_node)
-
-    arcs = sorted(arcs)
-    #print("\n", arcs)
-    return arcs
     
+    arcs = [(arcs_aux[i], arcs_aux[i+1]) for i in range(len(arcs_aux) - 1)]
+    arcs = sorted(arcs)
+
+    return arcs
 
 
 def permutation_shortest_path(solution: Solution):
@@ -342,13 +362,12 @@ def permutation_shortest_path(solution: Solution):
     new_solution = Solution()
     
     new_solution.bins = InstanceList()
-    show_acyclic_graph(graph)
+    # show_acyclic_graph(graph)
 
     print(arcs)
 
     a_list = []
-    
-  
+
     for i in range(len(arcs)):
 
         if i == len(arcs) - 1:

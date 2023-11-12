@@ -1,7 +1,7 @@
 from Instance_reader import *
 from VNS import *
-
 import numpy as np
+
 
 def main():
     instance_name = "instance=10_n=25_m=10_d=5_type=B2"
