@@ -10,22 +10,13 @@ def VND(best_solution):
 
     while True:
         current = bestImprovementMigrateItems(current)
-        if best_solution.cost - current.cost > epsilon:
-            # print("Melhorei com SWAP ITEMS")
-            # print(f'best: {best_solution.cost} current: {current.cost}')
-            best_solution = deepcopy(current)
-            continue
-        
         current = bestImprovementSwapItems(current)
 
         if best_solution.cost - current.cost > epsilon:
-            # print("Melhorei com SWAP ITEMS")
-            # print(f'best: {best_solution.cost} current: {current.cost}')
             best_solution = deepcopy(current)
             continue
         
         return best_solution
-
 
 
 def bestImprovementMigrateItems(solution:Solution):
@@ -63,7 +54,6 @@ def bestImprovementMigrateItems(solution:Solution):
     
     return solution
     
-
 
 def bestImprovementSwapItems(solution:Solution):
     best_i = -1 # index do melhor item i
@@ -113,18 +103,16 @@ def VNS(max_iter = 2000, time_limit = 600.0):
                 current = swap_bins(best)
                 #print('Swap bins')
             elif k == 2:
-              
                 current = delete_bins(best)
                 #print('Delete bins')
             elif k == 3:
-                
                 current = permutation_shortest_path(best)
                 #print('Permutation shortest path')
             
             current = VND(current)
 
             if best.cost - current.cost > epsilon:
-               
+                print(f"Melhora: {best.cost} -> {current.cost} (delta: {best.cost - current.cost})")
                 best = deepcopy(current)
                 
                 k = 1

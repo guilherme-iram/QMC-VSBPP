@@ -291,7 +291,7 @@ def buildAcyclicGraph(solution:Solution):
 
     return acyclic_digraph
 
-from time import sleep
+# from time import sleep
 
 def show_acyclic_graph(graph):
     for line in graph:

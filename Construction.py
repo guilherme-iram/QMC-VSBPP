@@ -2,6 +2,7 @@ from Instance import *
 from Solution import *
 
 def trivial_solution():
+    
     sol = Solution()
     j = 1
     for item in Instance.items_Data:

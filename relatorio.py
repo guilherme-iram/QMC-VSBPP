@@ -16,9 +16,10 @@ def main():
     if os.path.exists(diretorio):
 
         arquivos = os.listdir(diretorio)
-
-        for instance in arquivos[:2]:
- 
+        cont = 0
+        for instance in arquivos:
+            cont += 1
+            print(f"Instância {cont} de {len(arquivos)}\n")
             match = re.search(r'n=(25|50|100|200)', instance)
             if match:
                 
@@ -32,8 +33,10 @@ def main():
                     times = []
 
                     for i in range(1, 5 + 1):
-
+                        
                         print(f"Instância: {instance} - Execução: {i}")
+                        print(f"Execução {i} ({i / 5 * 100:.2f}%)\n")
+
                         instance_name = instance
                         # print("Instance: ", instance_name)
                         path = 'instances/' + instance_name 
@@ -51,7 +54,7 @@ def main():
 
                         print(str_solution)
 
-                        with open(f"resultados/n{numero}/{instance_name.split('.')[0]}/solucao_{i}.txt", "w") as f:
+                        with open(f"resultados/n{numero}/{instance_name.split('.')[0]}/VNS_solucao_{i}.txt", "w") as f:
                             f.write(str_solution)
                             f.close()
 
@@ -65,7 +68,7 @@ def main():
 
                     print(str_relaorio)
 
-                    with open(f"resultados/n{numero}/{instance_name.split('.')[0]}/relatorio.txt", "w") as f:
+                    with open(f"resultados/n{numero}/{instance_name.split('.')[0]}/VNS_relatorio.txt", "w") as f:
                         f.write(str_relaorio)
                         f.close()
     else:

@@ -1,0 +1,12 @@
+Solution: cost 8375
+Bin Type 9, cost 891, jointCost 1209 Items: [23, 13, 8, 12, 5]
+Weight: [270, 379, 204, 272, 180]
+Bin Type 10, cost 961, jointCost 1004 Items: [16, 14, 19, 15, 1, 4]
+Weight: [359, 181, 320, 385, 374]
+Bin Type 10, cost 961, jointCost 819 Items: [10, 22, 11, 2, 3, 21, 25]
+Weight: [386, 179, 332, 304, 405]
+Bin Type 10, cost 961, jointCost 469 Items: [20, 6, 7, 9, 18]
+Weight: [319, 161, 328, 223, 352]
+Bin Type 1, cost 723, jointCost 377 Items: [24, 17]
+Weight: [181, 121, 79, 105, 136]
+Tempo: 44.984625577926636 (s).
